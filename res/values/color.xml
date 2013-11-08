@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<resources>
+    <!-- PullDownView 下拉组件字体颜色-->
+    <color name="pull_down_text_color">#a3a7ac</color><!-- 下拉刷新文字颜色 -->
+
+</resources> 

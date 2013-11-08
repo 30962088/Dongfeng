@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+	<dimen name="maintabs_bar_item_height">53dp</dimen>
+	<!-- 
+	<dimen name="header_bar_height">75dp</dimen>
+	<dimen name="listview_margin_top">63dp</dimen>
+	-->
+	<dimen name="header_bar_height">100dp</dimen>
+	
+	<dimen name="detail_banner_height">162dp</dimen>
+	
+	<dimen name="item_icon_width">80dp</dimen>
+	<dimen name="item_icon_height">60dp</dimen>
+	
+</resources>

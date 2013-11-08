@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <style name="MyAnimationActivity">
+        <item name="android:activityOpenEnterAnimation">@anim/enter_right</item>
+        <item name="android:activityOpenExitAnimation">@anim/exit_left</item>
+        <item name="android:activityCloseEnterAnimation">@anim/enter_left</item>
+        <item name="android:activityCloseExitAnimation">@anim/exit_right</item>
+        
+        <item name="android:taskOpenEnterAnimation">@anim/enter_right</item>
+        <item name="android:taskOpenExitAnimation">@anim/exit_left</item>
+        <item name="android:taskCloseEnterAnimation">@anim/enter_left</item>
+        <item name="android:taskCloseExitAnimation">@anim/exit_right</item>
+        
+        <item name="android:taskToFrontEnterAnimation">@anim/enter_right</item>
+        <item name="android:taskToFrontExitAnimation">@anim/exit_left</item>
+        <item name="android:taskToBackEnterAnimation">@anim/enter_left</item>
+        <item name="android:taskToBackExitAnimation">@anim/exit_right</item>
+    </style>
+    
+    <style name="ContentOverlay" parent="android:style/Theme">
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:windowContentOverlay">@null</item>
+		<item name="android:windowBackground">@null</item>
+		<item name="android:windowAnimationStyle">@style/MyAnimationActivity</item>
+	</style>
+	
+    <style name="ChoiceDialogAnim" parent="android:Animation" mce_bogus="1">
+        <item name="android:windowEnterAnimation">@anim/dialog_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/dialog_exit_anim</item>
+    </style>
+    
+    <style name="ChoiceDialogTheme" parent="@android:style/Theme.Dialog">
+	    <item name="android:windowFrame">@null</item><!--边框-->
+	    <item name="android:windowIsFloating">true</item>
+	    <item name="android:windowIsTranslucent">true</item>
+	    <item name="android:windowNoTitle">true</item> <!--是否启用标题栏-->
+	    <item name="android:background">@android:color/white</item>
+	    <item name="android:windowBackground">@android:color/transparent</item>
+	    <item name="android:backgroundDimEnabled">true</item> <!--是否使用背景半透明-->
+	</style>
+	
+    
+</resources>  
+
