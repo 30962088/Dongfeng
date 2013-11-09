@@ -18,6 +18,7 @@ import com.media.dongfeng.R;
 import com.media.dongfeng.exception.ZhiDaoIOException;
 import com.media.dongfeng.model.Content;
 import com.media.dongfeng.model.Info;
+import com.media.dongfeng.model.Content.Size;
 import com.media.dongfeng.net.NetDataSource;
 import com.media.dongfeng.utils.BmpCache;
 import com.media.dongfeng.utils.Constants;
@@ -77,7 +78,8 @@ public class InfoTopView extends RelativeLayout {
         if (sItemIconHeight < 0) {
             sItemIconHeight = getContext().getResources().getDimensionPixelSize(R.dimen.item_icon_height);
         }
-        loadPicture(mIcon, mContent.iid, mContent.imageurl, sItemIconWidth, sItemIconHeight);
+        Size size = content.getSize(getContext());
+        loadPicture(mIcon, mContent.iid, mContent.imageurl, size.width, size.height);
     }
     
     private void loadPicture (ImageView view, int cid, String picUrl, int width, int height) {
@@ -113,7 +115,7 @@ public class InfoTopView extends RelativeLayout {
             Bitmap bmp = null;
             String file = null;
             try {
-                file = NetDataSource.getInstance(getContext()).getImage(mPicUrl, -1, -1, Constants.SAVE_PIC_PATH);
+                file = NetDataSource.getInstance(getContext()).getImage(mPicUrl, mWidth, mHeight, Constants.SAVE_PIC_PATH);
             } catch (ZhiDaoIOException e) {
                 return null;
             }

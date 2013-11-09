@@ -217,6 +217,15 @@ public class NetDataSource {
             tempFile.delete();
         }
         
+        if(width > 0 && height > 0){
+        	if(url.indexOf("?") == -1){
+        		url += "?";
+        	}else{
+        		url += "&";
+        	}
+        	url+="width="+width+"&height="+height;
+        }
+        
         HttpGet request = new HttpGet(url);
         HttpClient client = NetUtils.getRequestClient(mContext, url);
         HttpResponse response = null;
