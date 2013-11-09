@@ -295,13 +295,32 @@ public class SucaiFragment extends Fragment {
     	if(fid > 0 && position == 0){
     		return;
     	}
-    	Content content = contents.get(position);
-        addHasReadContent(content);
+    	final Content content = contents.get(position);
+    	
         FragmentTransaction transation = getFragmentManager().beginTransaction();
         transation.setCustomAnimations(R.anim.enter_right, 0, 0, 0);
         Fragment fragment = null;
         String newStack = null;
         if(fid == 0 && content.cfid>0){
+        	new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					try {
+						NetDataSource.getInstance(getActivity()).ReadSucai(MainTabActivity.mUser, content.cfid, 1);
+					} catch (ZhiDaoParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ZhiDaoApiException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ZhiDaoIOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+			}).start();
         	fragment = new SucaiFragment(content);
         	newStack = SucaiActivity.SUCAI_FOLDER_FRAGMENT;
         }else{
@@ -316,32 +335,32 @@ public class SucaiFragment extends Fragment {
     
     
     
-    private void addHasReadContent(Content content) {
-        for (Content c : mSucaiList) {
-            if (c.cid == content.cid) {
-                c.isRead = true;
-                return;
-            }
-        }
-        content.isRead = true;
-        mSucaiList.add(content);
-    }
+//    private void addHasReadContent(Content content) {
+//        for (Content c : mSucaiList) {
+//            if (c.cid == content.cid) {
+//                c.isRead = true;
+//                return;
+//            }
+//        }
+//        content.isRead = true;
+//        mSucaiList.add(content);
+//    }
     
-    private Content hasReadContent(Content content) {
-        boolean localFlag = false;
-        for (Content c : mSucaiList) {
-            if (c.cid == content.cid) {
-                localFlag = c.isRead;
-                break;
-            }
-        }
-        if (localFlag) {
-            content.isRead = true;
-            return content;
-        } else {
-            return content;
-        }
-    }
+//    private Content hasReadContent(Content content) {
+//        boolean localFlag = false;
+//        for (Content c : mSucaiList) {
+//            if (c.cid == content.cid) {
+//                localFlag = c.isRead;
+//                break;
+//            }
+//        }
+//        if (localFlag) {
+//            content.isRead = true;
+//            return content;
+//        } else {
+//            return content;
+//        }
+//    }
     
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container,
@@ -459,11 +478,11 @@ public class SucaiFragment extends Fragment {
             	v=iv;
             }else if(content.cid == 0  && content.cfid != 0){
             	CatView iv = new CatView(getActivity());
-                iv.update(hasReadContent(content), color);
+                iv.update(content, color);
                 v = iv;
             }else if(content.cid>0){
             	ItemView iv = new ItemView(getActivity());
-                iv.update(hasReadContent(content), color);
+                iv.update(content, color);
                 v = iv;
             }
             

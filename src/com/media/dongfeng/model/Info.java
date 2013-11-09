@@ -9,46 +9,38 @@ import android.text.TextUtils;
 
 import com.media.dongfeng.exception.ZhiDaoParseException;
 
-public class Content implements Serializable {
+public class Info implements Serializable {
 
     /**
      * 
      */
     private static final long serialVersionUID = 5383147808205010263L;
-    public int cid;
-    public int cfid;
+    public int iid;
     public String title;
     public String description;
     public String imageurl;
-    public String imgguid;
-    public String fileformat;
+    public String imgformat;
     public String datetime;
-    public boolean isJoined;
     public boolean isRead;
-    public boolean isCatTitle = false;
     
-    public Content() {
+    public Info() {
 		// TODO Auto-generated constructor stub
 	}
 
-    public Content(String json) throws ZhiDaoParseException {
+    public Info(String json) throws ZhiDaoParseException {
         if(TextUtils.isEmpty(json)) {
             return;
         }
         try {
             JSONObject obj = new JSONObject(json);
-            cid = obj.optInt("cid");
-            cfid = obj.getInt("cfid");
+            iid = obj.optInt("iid");
             title = obj.optString("title");
             description = obj.optString("description");
             imageurl = obj.optString("imageurl");
-            imgguid = obj.optString("imgguid");
-            fileformat = obj.optString("fileformat");
+            imgformat = obj.optString("imgformat");
             datetime = obj.optString("datetime");
-            isJoined = obj.optBoolean("isJoined");
-//            isRead = false;
             isRead = obj.optBoolean("isRead");
-            
+//            isRead = false;
         } catch (JSONException e) {
             throw new ZhiDaoParseException(e);
         }

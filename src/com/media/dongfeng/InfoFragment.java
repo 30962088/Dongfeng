@@ -31,14 +31,18 @@ import com.media.dongfeng.exception.ZhiDaoIOException;
 import com.media.dongfeng.exception.ZhiDaoParseException;
 import com.media.dongfeng.model.Content;
 import com.media.dongfeng.model.ContentList;
+import com.media.dongfeng.model.Info;
+import com.media.dongfeng.model.InfoList;
 import com.media.dongfeng.model.User;
 import com.media.dongfeng.net.NetDataSource;
 import com.media.dongfeng.utils.Constants;
 import com.media.dongfeng.utils.Utils;
+import com.media.dongfeng.view.InfoTopView;
+import com.media.dongfeng.view.InfoView;
 import com.media.dongfeng.view.ItemView;
 import com.media.dongfeng.view.RTPullListView;
 
-public class HuodongFragment extends Fragment {
+public class InfoFragment extends Fragment {
 
     private GetDataTask mGetDataTask;
     
@@ -48,7 +52,7 @@ public class HuodongFragment extends Fragment {
     
     private String mSearchText;
     
-    private List<Content> mHuodongList = new ArrayList<Content>();
+    private List<Info> mHuodongList = new ArrayList<Info>();
     
     private HuodongAdapter mAdapter;
     private HuodongAdapter mSearchAdapter;
@@ -56,7 +60,7 @@ public class HuodongFragment extends Fragment {
     private boolean mHasInit = false;
     private boolean mIsShowSearch = false;
     
-    public HuodongFragment() {
+    public InfoFragment() {
         mAdapter = new HuodongAdapter();
         mSearchAdapter = new HuodongAdapter();
         mGetDataTask = new GetDataTask(mAdapter, mSearchAdapter);
@@ -114,13 +118,12 @@ public class HuodongFragment extends Fragment {
                 if (position <= 0) {
                     return;
                 }
-                Content content = mGetDataTask.mList.get(position-1);
-                addHasReadContent(content);
+                Info content = mGetDataTask.mList.get(position-1);
                 FragmentTransaction transation = getFragmentManager().beginTransaction();
                 transation.setCustomAnimations(R.anim.enter_right, 0, 0, 0);
-                SucaiHuodongDetailFragment fragment = new SucaiHuodongDetailFragment(content, false);
-                transation.replace(R.id.huodong_container, fragment, HuoDongActivity.HUODONG_DETAIL_FRAGMENT);
-                transation.addToBackStack(HuoDongActivity.HUODONG_DETAIL_FRAGMENT);
+                InfoDetailFragment fragment = new InfoDetailFragment(content);
+                transation.replace(R.id.huodong_container, fragment, InfoActivity.HUODONG_DETAIL_FRAGMENT);
+                transation.addToBackStack(InfoActivity.HUODONG_DETAIL_FRAGMENT);
                 transation.commit();
             }
         });
@@ -164,13 +167,12 @@ public class HuodongFragment extends Fragment {
                 if (position <= 0) {
                     return;
                 }
-                Content content = mGetDataTask.mSearchList.get(position-1);
-                addHasReadContent(content);
+                Info content = mGetDataTask.mSearchList.get(position-1);
                 FragmentTransaction transation = getFragmentManager().beginTransaction();
                 transation.setCustomAnimations(R.anim.enter_right, 0, 0, 0);
-                SucaiHuodongDetailFragment fragment = new SucaiHuodongDetailFragment(content, false);
-                transation.replace(R.id.huodong_container, fragment, HuoDongActivity.HUODONG_DETAIL_FRAGMENT);
-                transation.addToBackStack(HuoDongActivity.HUODONG_DETAIL_FRAGMENT);
+                InfoDetailFragment fragment = new InfoDetailFragment(content);
+                transation.replace(R.id.huodong_container, fragment, InfoActivity.HUODONG_DETAIL_FRAGMENT);
+                transation.addToBackStack(InfoActivity.HUODONG_DETAIL_FRAGMENT);
                 transation.commit();
             }
         });
@@ -248,32 +250,34 @@ public class HuodongFragment extends Fragment {
         }
     }
     
-    private void addHasReadContent(Content content) {
-        for (Content c : mHuodongList) {
-            if (c.cid == content.cid) {
-                c.isRead = true;
-                return;
-            }
-        }
-        content.isRead = true;
-        mHuodongList.add(content);
-    }
+//    private void addHasReadContent(Info content) {
+////        for (Info c : mHuodongList) {
+////            if (c.iid == content.iid) {
+////                c.isRead = true;
+////                return;
+////            }
+////        }
+//        content.isRead = true;
+////        mHuodongList.add(content);
+//    }
     
-    private Content hasReadContent(Content content) {
-        boolean localFlag = false;
-        for (Content c : mHuodongList) {
-            if (c.cid == content.cid) {
-                localFlag = c.isRead;
-                break;
-            }
-        }
-        if (localFlag) {
-            content.isRead = true;
-            return content;
-        } else {
-            return content;
-        }
-    }
+//    private Info hasReadContent(Info content) {
+//    	content.isRead = true;
+//    	return content;
+////        boolean localFlag = false;
+////        for (Info c : mHuodongList) {
+////            if (c.iid == content.iid) {
+////                localFlag = c.isRead;
+////                break;
+////            }
+////        }
+////        if (localFlag) {
+////            content.isRead = true;
+////            return content;
+////        } else {
+////            return content;
+////        }
+//    }
     
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container,
@@ -287,7 +291,7 @@ public class HuodongFragment extends Fragment {
         // TODO Auto-generated method stub
         super.onResume();
         if (MainTabActivity.mUser != null) {
-            mHuodongList = Utils.loadHuodongCidList(getActivity(), MainTabActivity.mUser);
+            mHuodongList = Utils.loadInfoCidList(getActivity(), MainTabActivity.mUser);
         }
         mGetDataTask.notifyListView();
         mGetDataTask.notifySearchListView();
@@ -304,7 +308,7 @@ public class HuodongFragment extends Fragment {
         // TODO Auto-generated method stub
         super.onPause();
         if (MainTabActivity.mUser != null) {
-            Utils.saveHuodongCidList(getActivity(), MainTabActivity.mUser, mHuodongList);
+            Utils.saveInfoCidList(getActivity(), MainTabActivity.mUser, mHuodongList);
         }
         if (mGetDataTask.mListView.getVisibility() == View.VISIBLE) {
             mIsShowSearch = false;
@@ -316,7 +320,7 @@ public class HuodongFragment extends Fragment {
 
 
     private class HuodongAdapter extends BaseAdapter {
-        private List<Content> innerList = new ArrayList<Content>();
+        private List<Info> innerList = new ArrayList<Info>();
         @Override
         public int getCount() {
             return innerList.size();
@@ -332,7 +336,7 @@ public class HuodongFragment extends Fragment {
         @Override
         public View getView( int position, View convertView, ViewGroup parent ) {
             // TODO Auto-generated method stub
-            Content content = innerList.get(position);
+        	Info content = innerList.get(position);
             View v = null;
             int color;
             if (position % 2 == 0) {
@@ -340,23 +344,18 @@ public class HuodongFragment extends Fragment {
             } else {
                 color = 0xFFD6D6D6;
             }
-            if (convertView == null) {
-                ItemView iv = new ItemView(getActivity());
-                iv.update(hasReadContent(content), color);
+            if(position == 0){
+            	InfoTopView iv = new InfoTopView(getActivity());
+                iv.update(content, color);
                 v = iv;
-            } else {
-                try {
-                    v = convertView;
-                    ((ItemView) v).update(hasReadContent(content), color);
-                } catch (Exception e) {
-                    ItemView iv = new ItemView(getActivity());
-                    iv.update(hasReadContent(content), color);
-                    v = iv;
-                }
+            }else{
+            	InfoView iv = new InfoView(getActivity());
+                iv.update(content, color);
+                v = iv;
             }
             return v;
         }
-        public void notifyDataChange(List<Content> list) {
+        public void notifyDataChange(List<Info> list) {
             this.innerList.clear();
             if (list != null) {
                 innerList.addAll(list);
@@ -380,8 +379,8 @@ public class HuodongFragment extends Fragment {
     private static class GetDataTask {
         private int mPage;
         private int mSearchPage;
-        private List<Content> mList = new ArrayList<Content>();
-        private List<Content> mSearchList = new ArrayList<Content>();
+        private List<Info> mList = new ArrayList<Info>();
+        private List<Info> mSearchList = new ArrayList<Info>();
         
         private RTPullListView mListView;
         private HuodongAdapter mAdapter;
@@ -507,13 +506,13 @@ public class HuodongFragment extends Fragment {
         }
         
         
-        private class GetDataTaskInternal extends AsyncTask<Object, Void, List<Content>> {
+        private class GetDataTaskInternal extends AsyncTask<Object, Void, List<Info>> {
             private boolean isSearch = false; 
             private boolean isRefresh;
             private boolean isShowPullDownView;
             
             @Override
-            protected List<Content> doInBackground(Object... params) {
+            protected List<Info> doInBackground(Object... params) {
                 User user = (User) params[0];
                 int page = (Integer) params[1];
                 String keyword = (String) params[2];
@@ -526,10 +525,10 @@ public class HuodongFragment extends Fragment {
                 isShowPullDownView = (Boolean) params[4];
                 
                 try {
-                    ContentList contentList = NetDataSource.getInstance(mContext)
-                            .getContentsList(user, 0,1, Constants.LIST_COUNT, page, keyword);
-                    if (contentList != null && !contentList.mContentList.isEmpty()) {
-                        return contentList.mContentList;
+                    InfoList infoList = NetDataSource.getInstance(mContext)
+                            .getInfoList(user, page, Constants.LIST_COUNT, keyword);
+                    if (infoList != null && !infoList.mInfoList.isEmpty()) {
+                        return infoList.mInfoList;
                     }
                 } catch (ZhiDaoParseException e) {
                     // TODO Auto-generated catch block
@@ -545,7 +544,7 @@ public class HuodongFragment extends Fragment {
             }
 
             @Override
-            protected void onPostExecute(List<Content> result) {
+            protected void onPostExecute(List<Info> result) {
                 super.onPostExecute(result);
                 if (isSearch) {
                     if (isRefresh) { //refresh

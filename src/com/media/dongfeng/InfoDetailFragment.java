@@ -33,12 +33,13 @@ import com.media.dongfeng.exception.ZhiDaoApiException;
 import com.media.dongfeng.exception.ZhiDaoIOException;
 import com.media.dongfeng.exception.ZhiDaoParseException;
 import com.media.dongfeng.model.Content;
+import com.media.dongfeng.model.Info;
 import com.media.dongfeng.model.User;
 import com.media.dongfeng.net.NetDataSource;
 import com.media.dongfeng.utils.Constants;
 import com.media.dongfeng.utils.Utils;
 
-public class SucaiHuodongDetailFragment extends Fragment {
+public class InfoDetailFragment extends Fragment {
 
     private TextView mBackBtn;
     private TextView mAnniu;
@@ -47,26 +48,23 @@ public class SucaiHuodongDetailFragment extends Fragment {
     private TextView mContentView;
     private ImageView mDetailBannerView;
     
-    private Content mContent;
-    private boolean mIsSucai;
+    private Info mContent;
     
-    private List<Content> mSucaiList = new ArrayList<Content>();
-    private List<Content> mHuodongList = new ArrayList<Content>();
+    private List<Info> mSucaiList = new ArrayList<Info>();
     
     private boolean mSendMailTaskFree;
-    private boolean mActiveTaskFree;
     
-    public SucaiHuodongDetailFragment() {
+    public InfoDetailFragment() {
 		// TODO Auto-generated constructor stub
 	}
     
-    public SucaiHuodongDetailFragment (Content content, boolean isSucai) {
+    public InfoDetailFragment (Info content) {
         this.mContent = content;
-        this.mIsSucai = isSucai;
-        if(!content.isRead){
-        	content.isRead = true;
-        	Read(MainTabActivity.mUser, content.cid);
+        if(!mContent.isRead){
+        	mContent.isRead = true;
+        	Read(MainTabActivity.mUser, content.iid);
         }
+        
         
     }
     
@@ -88,7 +86,7 @@ public class SucaiHuodongDetailFragment extends Fragment {
 
         protected Void doInBackground( Void... args ) {
             try {
-                NetDataSource.getInstance(getActivity()).ReadSucai(this.mUser, this.mCid,0);
+                NetDataSource.getInstance(getActivity()).ReadSucai(this.mUser, this.mCid,2);
             } catch (ZhiDaoIOException e) {
             } catch (ZhiDaoApiException e) {
             } catch (ZhiDaoParseException e) {
@@ -108,16 +106,11 @@ public class SucaiHuodongDetailFragment extends Fragment {
     public void onActivityCreated( Bundle savedInstanceState ) {
         super.onActivityCreated(savedInstanceState);
         mSendMailTaskFree = true;
-        mActiveTaskFree = true;
-        if (mIsSucai) {
-            if (MainTabActivity.mUser != null) {
-                mSucaiList = Utils.loadSucaiCidList(getActivity(), MainTabActivity.mUser);
-            }
-        } else {
-//            if (MainTabActivity.mUser != null) {
-//                mHuodongList = Utils.loadHuodongCidList(getActivity(), MainTabActivity.mUser);
-//            }
+        
+        if (MainTabActivity.mUser != null) {
+            mSucaiList = Utils.loadInfoCidList(getActivity(), MainTabActivity.mUser);
         }
+        
         
         mBackBtn = (TextView) getView().findViewById(R.id.back);
         mBackBtn.setOnClickListener(new View.OnClickListener() {
@@ -132,27 +125,13 @@ public class SucaiHuodongDetailFragment extends Fragment {
         mAnniu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick( View v ) {
-                if (mIsSucai) {
-                    sendMail(MainTabActivity.mUser, mContent.cid);
-                } else {
-                    if (hasJoint(false, mContent)) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setMessage("活动已参加,请勿重复报名")
-                        .setCancelable(false)
-                        .setPositiveButton("确定", new OnClickListener() {
-                            @Override
-                            public void onClick( DialogInterface dialog, int which ) {
-                                // TODO Auto-generated method stub
-                                dialog.dismiss();
-                            }
-                        }).show();
-                    } else {
-                        active(MainTabActivity.mUser, mContent.cid);
-                    }
-                }
+                
+                sendMail(MainTabActivity.mUser, mContent.iid);
+                
             }
         });
-        updateHuodongButtonBg(mIsSucai, hasJoint(mIsSucai, mContent));
+        mAnniu.setText(/**R.string.send_to_my_mailbox*/"发送到我的邮箱");
+//        updateHuodongButtonBg(mIsSucai, hasJoint(mIsSucai, mContent));
         
         mTitleView = (TextView) getView().findViewById(R.id.titleTxt);
         mTitleView.setText(mContent.title);
@@ -170,60 +149,17 @@ public class SucaiHuodongDetailFragment extends Fragment {
                 getActivity().getResources().getDimensionPixelSize(R.dimen.detail_banner_height));
     }
     
-    private void updateHuodongButtonBg(boolean isSucai, boolean hasJoint) {
-        if (isSucai) {
-            mAnniu.setText(/**R.string.send_to_my_mailbox*/"发送到我的邮箱");
-        } else {
-            if (hasJoint) {
-                mAnniu.setBackgroundResource(R.drawable.anniu_disable);
-                mAnniu.setText(/**R.string.has_canjia**/"活动已参加");
-            } else {
-                mAnniu.setBackgroundResource(R.drawable.anniu);
-                mAnniu.setText(/**R.string.woyaocanjia**/"我要参加");
-            }
-        }
-    }
     
-    private boolean hasJoint(boolean isSucai, Content content) {
-        if (isSucai) {
-            return false;
-        }
-        boolean localFlag = false;
-        for (Content c : mHuodongList) {
-            if (c.cid == content.cid) {
-                localFlag = c.isJoined;
-                break;
-            }
-        }
-        if (localFlag) {
-            content.isJoined = true;
-            return true;
-        } else {
-            return content.isJoined;
-        }
-    }
     
-    private void addJoint(int cid, boolean joint) {
-        for (Content c : mHuodongList) {
-            if (c.cid == cid) {
-                c.isJoined = joint;
-                break;
-            }
-        }
-    }
     
     @Override
     public void onPause() {
         super.onPause();
-        if (mIsSucai) {
-            if (MainTabActivity.mUser != null) {
-                Utils.saveSucaiCidList(getActivity(), MainTabActivity.mUser, mSucaiList);
-            }
-        } else {
-//            if (MainTabActivity.mUser != null) {
-//                Utils.saveHuodongCidList(getActivity(), MainTabActivity.mUser, mHuodongList);
-//            }
+       
+        if (MainTabActivity.mUser != null) {
+            Utils.saveInfoCidList(getActivity(), MainTabActivity.mUser, mSucaiList);
         }
+        
     }
 
     private int getDisplayWidth() {
@@ -253,57 +189,7 @@ public class SucaiHuodongDetailFragment extends Fragment {
         return inflater.inflate(R.layout.sucai_huodong_detail_layout, null);
     }
     
-    private void active(User user, int cid) {
-        if (user != null) {
-            if(!mActiveTaskFree) {
-                return;
-            }
-            mActiveTaskFree = false;
-            new ActiveTask(user, cid).execute();
-        }
-    }
     
-    private class ActiveTask extends AsyncTask<Void, Void, Boolean> {
-
-        private User mUser;
-        private int mCid;
-        
-        public ActiveTask(User user, int cid) {
-            this.mUser = user;
-            this.mCid = cid;
-        }
-
-        protected Boolean doInBackground( Void... args ) {
-            boolean suc = false;
-            try {
-                suc = NetDataSource.getInstance(getActivity()).JoinActivities(mUser, mCid);
-            } catch (ZhiDaoIOException e) {
-            } catch (ZhiDaoApiException e) {
-            } catch (ZhiDaoParseException e) {
-            }
-            return suc;
-        }
-
-        @Override
-        protected void onPostExecute( Boolean result ) {
-            super.onPostExecute(result);
-            if (result) {
-                addJoint(mContent.cid, true);
-                updateHuodongButtonBg(false, true);
-                if (getActivity() != null) {
-                    CustomDialog dialog = new CustomDialog(getActivity(), R.style.ChoiceDialogTheme);
-                    dialog.showDialog();
-                }
-            } else {
-                addJoint(mContent.cid, false);
-                updateHuodongButtonBg(false, false);
-                if (getActivity() != null) {
-                    Toast.makeText(getActivity(), getActivity().getString(R.string.err_baoming), 0).show();
-                }
-            }
-            mActiveTaskFree = true;
-        }
-    }
     
     
     private void sendMail(User user, int cid) {
@@ -328,7 +214,7 @@ public class SucaiHuodongDetailFragment extends Fragment {
 
         protected Boolean doInBackground( Void... args ) {
             try {
-                if (NetDataSource.getInstance(getActivity()).sendMail(mUser, mCid,0)) {
+                if (NetDataSource.getInstance(getActivity()).sendMail(mUser, mCid,2)) {
                     return true;
                 }
             } catch (ZhiDaoIOException e) {

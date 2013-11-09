@@ -13,6 +13,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 
 import com.media.dongfeng.model.Content;
+import com.media.dongfeng.model.Info;
 import com.media.dongfeng.model.User;
 
 public class Utils {
@@ -60,17 +61,17 @@ public class Utils {
         }
     }
     
-    public static List<Content> loadHuodongCidList(Context ctx, User user) {
-        File file = new File(ctx.getCacheDir(), "huodong_"+user.mid);
-        List<Content> cidlist = (List<Content>)load(file);
+    public static List<Info> loadInfoCidList(Context ctx, User user) {
+        File file = new File(ctx.getCacheDir(), "info_"+user.mid);
+        List<Info> cidlist = (List<Info>)load(file);
         if (cidlist == null) {
-            cidlist = new ArrayList<Content>();
+            cidlist = new ArrayList<Info>();
         }
         return cidlist;
     }
     
-    public static void saveHuodongCidList(Context ctx, User user, List<Content> cidlist) {
-        File file = new File(ctx.getCacheDir(), "huodong_"+user.mid);
+    public static void saveInfoCidList(Context ctx, User user, List<Info> cidlist) {
+        File file = new File(ctx.getCacheDir(), "info_"+user.mid);
         if (cidlist != null) {
             save(cidlist, file);
         }

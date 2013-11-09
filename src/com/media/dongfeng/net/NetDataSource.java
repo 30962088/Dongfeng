@@ -20,6 +20,7 @@ import com.media.dongfeng.exception.ZhiDaoApiException;
 import com.media.dongfeng.exception.ZhiDaoIOException;
 import com.media.dongfeng.exception.ZhiDaoParseException;
 import com.media.dongfeng.model.ContentList;
+import com.media.dongfeng.model.InfoList;
 import com.media.dongfeng.model.User;
 import com.media.dongfeng.utils.MD5;
 import com.media.dongfeng.utils.Utils;
@@ -100,6 +101,27 @@ public class NetDataSource {
         String content = NetUtils.openUrl(mContext, url.toString(), "GET", param);
         Log.d(TAG, "getContentsList="+content);
         return new ContentList(content);
+    }
+    
+    
+    public InfoList getInfoList(User user,int page,int size,String keyword) throws ZhiDaoParseException, ZhiDaoApiException, ZhiDaoIOException{
+        Bundle param = new Bundle();
+        if (user != null && !TextUtils.isEmpty(user.mid)) {
+            param.putString("mid", String.valueOf(user.mid));
+        }
+//        param.putString("type", String.valueOf(type));
+        param.putString("size", String.valueOf(size));
+        param.putString("page", String.valueOf(page));
+        if (keyword == null) {
+            param.putString("keyword", "");
+        } else {
+            param.putString("keyword", keyword);
+        }
+        StringBuilder url = new StringBuilder();
+        url.append(HOST).append("GetInfoList");
+        String content = NetUtils.openUrl(mContext, url.toString(), "GET", param);
+        Log.d(TAG, "getContentsList="+content);
+        return new InfoList(content);
     }
     
     /**

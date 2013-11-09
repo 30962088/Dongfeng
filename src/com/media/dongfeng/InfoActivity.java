@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
 
-public class HuoDongActivity extends BaseActivity {
+public class InfoActivity extends BaseActivity {
 
     public static final String HUODONG_FRAGMENT = "huodong_fragment";
     public static final String HUODONG_DETAIL_FRAGMENT = "huodong_detail_fragment";
@@ -16,7 +16,7 @@ public class HuoDongActivity extends BaseActivity {
         setContentView(R.layout.huodong_framework);
         
         FragmentTransaction transation = getSupportFragmentManager().beginTransaction();
-        HuodongFragment fragment = new HuodongFragment();
+        InfoFragment fragment = new InfoFragment();
         transation.add(R.id.huodong_container, fragment, HUODONG_FRAGMENT);
         transation.commit();
         

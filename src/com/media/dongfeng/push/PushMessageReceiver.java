@@ -95,26 +95,27 @@ public class PushMessageReceiver extends BroadcastReceiver {
 		} else if (intent.getAction().equals(
 				PushConstants.ACTION_RECEIVER_NOTIFICATION_CLICK)) {
 			
-			Intent i = new Intent(context, MainTabActivity.class);
-			i.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
-			context.startActivity(i);
+//			Intent i = new Intent(context, MainTabActivity.class);
+//			i.putExtra("info", true);
+//			i.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
+//			context.startActivity(i);
 			
 //			Log.d(TAG, "intent=" + intent.toUri(0));
 //			
 //			//自定义内容的json串
 //        	Log.d(TAG, "EXTRA_EXTRA = " + intent.getStringExtra(PushConstants.EXTRA_EXTRA));
 //			
-//			Intent aIntent = new Intent();
-//			aIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//			aIntent.setClass(context, CustomActivity.class);
-//			String title = intent
-//					.getStringExtra(PushConstants.EXTRA_NOTIFICATION_TITLE);
-//			aIntent.putExtra(PushConstants.EXTRA_NOTIFICATION_TITLE, title);
-//			String content = intent
-//					.getStringExtra(PushConstants.EXTRA_NOTIFICATION_CONTENT);
-//			aIntent.putExtra(PushConstants.EXTRA_NOTIFICATION_CONTENT, content);
-//
-//			context.startActivity(aIntent);
+			Intent aIntent = new Intent();
+			aIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			aIntent.setClass(context, MainTabActivity.class);
+			String title = intent
+					.getStringExtra(PushConstants.EXTRA_NOTIFICATION_TITLE);
+			aIntent.putExtra(PushConstants.EXTRA_NOTIFICATION_TITLE, title);
+			String content = intent
+					.getStringExtra(PushConstants.EXTRA_NOTIFICATION_CONTENT);
+			aIntent.putExtra(PushConstants.EXTRA_NOTIFICATION_CONTENT, content);
+
+			context.startActivity(aIntent);
 		}
 	}
 
