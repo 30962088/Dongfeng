@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
@@ -97,18 +98,28 @@ public class InfoFragment extends Fragment {
         mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged( AbsListView view, int scrollState ) {
+            	
+            	if(scrollState == OnScrollListener.SCROLL_STATE_IDLE){
+            		int pos = view.getLastVisiblePosition();
+            		if(pos>20&&pos == view.getCount()-1){
+            			mGetDataTask.switchListViewMode(false);
+                        mGetDataTask.LoadMoreList(MainTabActivity.mUser);
+            		}
+            	}
+            	
             }
             @Override
             public void onScroll( AbsListView view, int firstVisibleItem, int visibleItemCount,
                     int totalItemCount ) {
+//            	Log.d("zzm", "y:"+mListView.getSelectedItemPosition());
                 // TODO Auto-generated method stub
-                if (TextUtils.isEmpty(mSearchText)) {
-                    if (totalItemCount > 0 && totalItemCount == firstVisibleItem + visibleItemCount) {
-//                        Log.d("net", "mListView onScroll loadMore firstVisibleItem="+firstVisibleItem+"  visibleItemCount="+visibleItemCount+"    totalItemCount="+totalItemCount);
-                        mGetDataTask.switchListViewMode(false);
-                        mGetDataTask.LoadMoreList(MainTabActivity.mUser);
-                    }
-                }
+//                if (TextUtils.isEmpty(mSearchText)) {
+//                    if (totalItemCount > 0 && firstVisibleItem>0&& totalItemCount == firstVisibleItem + visibleItemCount) {
+////                        Log.d("net", "mListView onScroll loadMore firstVisibleItem="+firstVisibleItem+"  visibleItemCount="+visibleItemCount+"    totalItemCount="+totalItemCount);
+////                        mGetDataTask.switchListViewMode(false);
+////                        mGetDataTask.LoadMoreList(MainTabActivity.mUser);
+//                    }
+//                }
             }
         });
         mListView.setOnItemClickListener(new OnItemClickListener() {
@@ -145,18 +156,25 @@ public class InfoFragment extends Fragment {
         mSearchListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged( AbsListView view, int scrollState ) {
+            	if(scrollState == OnScrollListener.SCROLL_STATE_IDLE){
+            		int pos = view.getLastVisiblePosition();
+            		if(pos>20&&pos == view.getCount()-1){
+            			mGetDataTask.switchListViewMode(false);
+                        mGetDataTask.LoadMoreList(MainTabActivity.mUser);
+            		}
+            	}
             }
             @Override
             public void onScroll( AbsListView view, int firstVisibleItem, int visibleItemCount,
                     int totalItemCount ) {
                 // TODO Auto-generated method stub
-                if (!TextUtils.isEmpty(mSearchText)) {
-                if (totalItemCount > 0 && totalItemCount == firstVisibleItem + visibleItemCount) {
-//                    Log.d("net", "mSearchListView onScroll loadMore firstVisibleItem="+firstVisibleItem+"  visibleItemCount="+visibleItemCount+"    totalItemCount="+totalItemCount);
-                    mGetDataTask.switchListViewMode(true);
-                    mGetDataTask.LoadMoreSearchList(MainTabActivity.mUser, mSearchText);
-                }
-                }
+//                if (!TextUtils.isEmpty(mSearchText)) {
+//                if (totalItemCount > 0 && totalItemCount == firstVisibleItem + visibleItemCount) {
+////                    Log.d("net", "mSearchListView onScroll loadMore firstVisibleItem="+firstVisibleItem+"  visibleItemCount="+visibleItemCount+"    totalItemCount="+totalItemCount);
+//                    mGetDataTask.switchListViewMode(true);
+//                    mGetDataTask.LoadMoreSearchList(MainTabActivity.mUser, mSearchText);
+//                }
+//                }
             }
             
         });
@@ -286,12 +304,18 @@ public class InfoFragment extends Fragment {
         return inflater.inflate(R.layout.huodong_layout, null);
     }
 
+    boolean isNeedRefresh = true;
+    public void needRefresh(boolean s){
+    	isNeedRefresh = s;
+    }
+    
     @Override
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        if (MainTabActivity.mUser != null) {
-            mHuodongList = Utils.loadInfoCidList(getActivity(), MainTabActivity.mUser);
+        if(isNeedRefresh){
+        	mGetDataTask.RefreshList(MainTabActivity.mUser, false);
+        	isNeedRefresh = false;
         }
         mGetDataTask.notifyListView();
         mGetDataTask.notifySearchListView();

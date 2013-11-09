@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
@@ -82,6 +83,7 @@ public class SucaiFragment extends Fragment {
         mAdapter = new SucaiAdapter();
         mSearchAdapter = new SucaiAdapter();
         mGetDataTask = new GetDataTask(mAdapter, mSearchAdapter);
+       
     }
     
     @Override
@@ -89,6 +91,9 @@ public class SucaiFragment extends Fragment {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
     }
+    
+    
+   
 
     @Override
     public void onActivityCreated( Bundle savedInstanceState ) {
@@ -118,18 +123,25 @@ public class SucaiFragment extends Fragment {
         mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged( AbsListView view, int scrollState ) {
+            	if(scrollState == OnScrollListener.SCROLL_STATE_IDLE){
+            		int pos = view.getLastVisiblePosition();
+            		if(pos>20&&pos == view.getCount()-1){
+            			mGetDataTask.switchListViewMode(false);
+                        mGetDataTask.LoadMoreList(MainTabActivity.mUser);
+            		}
+            	}
             }
             @Override
             public void onScroll( AbsListView view, int firstVisibleItem, int visibleItemCount,
                     int totalItemCount ) {
                 // TODO Auto-generated method stub
-                if (TextUtils.isEmpty(mSearchText)) {
-                    if (totalItemCount > 0 && totalItemCount == firstVisibleItem + visibleItemCount) {
-//                        Log.d("net", "mListView onScroll loadMore firstVisibleItem="+firstVisibleItem+"  visibleItemCount="+visibleItemCount+"    totalItemCount="+totalItemCount);
-                        mGetDataTask.switchListViewMode(false);
-                        mGetDataTask.LoadMoreList(MainTabActivity.mUser);
-                    }
-                }
+//                if (TextUtils.isEmpty(mSearchText)) {
+//                    if (totalItemCount > 0 && totalItemCount == firstVisibleItem + visibleItemCount) {
+////                        Log.d("net", "mListView onScroll loadMore firstVisibleItem="+firstVisibleItem+"  visibleItemCount="+visibleItemCount+"    totalItemCount="+totalItemCount);
+////                        mGetDataTask.switchListViewMode(false);
+////                        mGetDataTask.LoadMoreList(MainTabActivity.mUser);
+//                    }
+//                }
             }
         });
         mListView.setOnItemClickListener(new OnItemClickListener() {
@@ -168,18 +180,26 @@ public class SucaiFragment extends Fragment {
         mSearchListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged( AbsListView view, int scrollState ) {
+            	
+            	if(scrollState == OnScrollListener.SCROLL_STATE_IDLE){
+            		int pos = view.getLastVisiblePosition();
+            		if(pos>20&&pos == view.getCount()-1){
+            			mGetDataTask.switchListViewMode(false);
+                        mGetDataTask.LoadMoreList(MainTabActivity.mUser);
+            		}
+            	}
             }
             @Override
             public void onScroll( AbsListView view, int firstVisibleItem, int visibleItemCount,
                     int totalItemCount ) {
                 // TODO Auto-generated method stub
-                if (!TextUtils.isEmpty(mSearchText)) {
-                if (totalItemCount > 0 && totalItemCount == firstVisibleItem + visibleItemCount) {
-//                    Log.d("net", "mSearchListView onScroll loadMore firstVisibleItem="+firstVisibleItem+"  visibleItemCount="+visibleItemCount+"    totalItemCount="+totalItemCount);
-                    mGetDataTask.switchListViewMode(true);
-                    mGetDataTask.LoadMoreSearchList(MainTabActivity.mUser, mSearchText);
-                }
-                }
+//                if (!TextUtils.isEmpty(mSearchText)) {
+//                if (totalItemCount > 0 && totalItemCount == firstVisibleItem + visibleItemCount) {
+////                    Log.d("net", "mSearchListView onScroll loadMore firstVisibleItem="+firstVisibleItem+"  visibleItemCount="+visibleItemCount+"    totalItemCount="+totalItemCount);
+//                    mGetDataTask.switchListViewMode(true);
+//                    mGetDataTask.LoadMoreSearchList(MainTabActivity.mUser, mSearchText);
+//                }
+//                }
             }
             
         });
@@ -369,10 +389,19 @@ public class SucaiFragment extends Fragment {
         return inflater.inflate(R.layout.sucai_layout, null);
     }
 
+    boolean isNeedRefresh = true;
+    public void needRefresh(boolean s){
+    	isNeedRefresh = s;
+    }
+    
     @Override
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+        if(isNeedRefresh){
+        	mGetDataTask.RefreshList(MainTabActivity.mUser, false);
+        	isNeedRefresh = false;
+        }
         mGetDataTask.notifyListView();
         mGetDataTask.notifySearchListView();
     }
