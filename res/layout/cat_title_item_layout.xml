@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="120dp" 
+    android:background="#fff">
+    
+    <ImageView 
+        android:id="@+id/img"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter"
+        android:layout_centerInParent="true"
+        android:src="@drawable/active_suc"/>
+    
+    <View 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#cc000000"/>
+    
+    <ImageView 
+        android:id="@+id/dianji"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dianji"
+        android:layout_centerInParent="true"/>
+    
+    <TextView 
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="标题"
+        android:textColor="#fff"
+        android:layout_alignLeft="@id/dianji"
+        android:layout_above="@id/dianji"/>
+    
+    <TextView 
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="2dp"
+        android:paddingRight="2dp"
+        android:background="#000"
+        android:gravity="center"
+        android:text="包含下列信息"
+        android:textColor="#fff"
+        android:textSize="14sp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

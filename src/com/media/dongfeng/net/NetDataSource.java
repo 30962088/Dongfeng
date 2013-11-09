@@ -31,7 +31,9 @@ public class NetDataSource {
     private static NetDataSource sInstance;
     private Context mContext;
     
-    public static final String HOST = "http://42.121.113.199:83/get.mvc/";
+    public static final String HOST = "http://df.1du1du.com/get.mvc/";
+    
+    public static final String HOST_2 = "http://42.121.113.199:83/get.mvc/";
     
     private NetDataSource(Context context) {
         mContext = context;
@@ -57,6 +59,7 @@ public class NetDataSource {
         param.putString("name", name);
         param.putString("company", company);
         param.putString("email", email);
+        param.putString("pkey", "");
         StringBuilder url = new StringBuilder();
         url.append(HOST).append("PersonLogin");
         String content = NetUtils.openUrl(mContext, url.toString(), "GET", param);
@@ -76,14 +79,15 @@ public class NetDataSource {
      * @throws ZhiDaoApiException
      * @throws ZhiDaoIOException
      */
-    public ContentList getContentsList (User user, int type, int size, int page, String keyword) 
+    public ContentList getContentsList (User user,int cfid, int type, int size, int page, String keyword) 
             throws ZhiDaoParseException, ZhiDaoApiException, ZhiDaoIOException {
         Log.d("net", "getContentsList type="+type+"   size="+size+"    page="+page+"    keyword="+keyword);
         Bundle param = new Bundle();
         if (user != null && !TextUtils.isEmpty(user.mid)) {
             param.putString("mid", String.valueOf(user.mid));
         }
-        param.putString("type", String.valueOf(type));
+        param.putString("cfid", ""+cfid);
+//        param.putString("type", String.valueOf(type));
         param.putString("size", String.valueOf(size));
         param.putString("page", String.valueOf(page));
         if (keyword == null) {
@@ -130,15 +134,15 @@ public class NetDataSource {
      * @throws ZhiDaoApiException
      * @throws ZhiDaoIOException
      */
-    public boolean ReadSucai(User user, int cid) throws ZhiDaoParseException, ZhiDaoApiException, ZhiDaoIOException {
+    public boolean ReadSucai(User user, int cid,int type) throws ZhiDaoParseException, ZhiDaoApiException, ZhiDaoIOException {
         Bundle param = new Bundle();
         if (user != null && !TextUtils.isEmpty(user.mid)) {
             param.putString("mid", String.valueOf(user.mid));
         }
-        param.putString("cid", String.valueOf(cid));
-        param.putString("type", "1");
+        param.putString("id", String.valueOf(cid));
+        param.putString("type", ""+type);
         StringBuilder url = new StringBuilder();
-        url.append(HOST).append("JoinActivities");
+        url.append(HOST).append("ReadInfoMaterial");
         String content = NetUtils.openUrl(mContext, url.toString(), "GET", param);
         Log.d(TAG, "JoinActivities="+content);
         return checkReturnBoolean(content);
@@ -153,14 +157,15 @@ public class NetDataSource {
      * @throws ZhiDaoApiException
      * @throws ZhiDaoIOException
      */
-    public boolean sendMail(User user, int cid) throws ZhiDaoParseException, ZhiDaoApiException, ZhiDaoIOException {
+    public boolean sendMail(User user, int cid,int type) throws ZhiDaoParseException, ZhiDaoApiException, ZhiDaoIOException {
         Bundle param = new Bundle();
         if (user != null && !TextUtils.isEmpty(user.mid)) {
             param.putString("mid", String.valueOf(user.mid));
         }
         param.putString("id", String.valueOf(cid));
+        param.putString("type", ""+type);
         StringBuilder url = new StringBuilder();
-        url.append(HOST).append("sendemail");
+        url.append(HOST).append("SendEmail");
         String content = NetUtils.openUrl(mContext, url.toString(), "GET", param);
         Log.d(TAG, "sendemail="+content);
         return checkReturnBoolean(content);

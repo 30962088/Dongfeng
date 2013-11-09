@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 
+import org.apache.http.entity.mime.MinimalField;
+
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,6 +28,7 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.media.dongfeng.exception.ZhiDaoApiException;
 import com.media.dongfeng.exception.ZhiDaoIOException;
@@ -35,6 +39,9 @@ import com.media.dongfeng.model.User;
 import com.media.dongfeng.net.NetDataSource;
 import com.media.dongfeng.utils.Constants;
 import com.media.dongfeng.utils.Utils;
+import com.media.dongfeng.view.CatTitleView;
+import com.media.dongfeng.view.CatTitleView.OnDianjiClick;
+import com.media.dongfeng.view.CatView;
 import com.media.dongfeng.view.ItemView;
 import com.media.dongfeng.view.RTPullListView;
 
@@ -56,7 +63,22 @@ public class SucaiFragment extends Fragment {
     private boolean mHasInit = false;
     private boolean mIsShowSearch = false;
     
+    private Content content;
+    
+    private int fid;
+    
     public SucaiFragment() {
+		// TODO Auto-generated constructor stub
+	}
+    
+    public SucaiFragment(Content content) {
+    	this.content = content;
+    	if(content == null){
+    		fid = 0;
+    	}else{
+    		fid = content.cfid;
+    	}
+    	
         mAdapter = new SucaiAdapter();
         mSearchAdapter = new SucaiAdapter();
         mGetDataTask = new GetDataTask(mAdapter, mSearchAdapter);
@@ -117,14 +139,15 @@ public class SucaiFragment extends Fragment {
                 if (position <= 0) {
                     return;
                 }
-                Content content = mGetDataTask.mList.get(position-1);
-                addHasReadContent(content);
-                FragmentTransaction transation = getFragmentManager().beginTransaction();
-                transation.setCustomAnimations(R.anim.enter_right, 0, 0, 0);
-                SucaiHuodongDetailFragment fragment = new SucaiHuodongDetailFragment(content, true);
-                transation.replace(R.id.sucai_container, fragment, SucaiActivity.SUCAI_DETAIL_FRAGMENT);
-                transation.addToBackStack(SucaiActivity.SUCAI_DETAIL_FRAGMENT);
-                transation.commit();
+                onItemViewClick(mGetDataTask.mList,position-1);
+//                Content content = mGetDataTask.mList.get(position-1);
+//                addHasReadContent(content);
+//                FragmentTransaction transation = getFragmentManager().beginTransaction();
+//                transation.setCustomAnimations(R.anim.enter_right, 0, 0, 0);
+//                SucaiHuodongDetailFragment fragment = new SucaiHuodongDetailFragment(content, true);
+//                transation.replace(R.id.sucai_container, fragment, SucaiActivity.SUCAI_DETAIL_FRAGMENT);
+//                transation.addToBackStack(SucaiActivity.SUCAI_DETAIL_FRAGMENT);
+//                transation.commit();
             }
         });
         mListView.setAdapter(mAdapter);
@@ -167,14 +190,15 @@ public class SucaiFragment extends Fragment {
                 if (position <= 0) {
                     return;
                 }
-                Content content = mGetDataTask.mSearchList.get(position-1);
-                addHasReadContent(content);
-                FragmentTransaction transation = getFragmentManager().beginTransaction();
-                transation.setCustomAnimations(R.anim.enter_right, 0, 0, 0);
-                SucaiHuodongDetailFragment fragment = new SucaiHuodongDetailFragment(content, true);
-                transation.replace(R.id.sucai_container, fragment, SucaiActivity.SUCAI_DETAIL_FRAGMENT);
-                transation.addToBackStack(SucaiActivity.SUCAI_DETAIL_FRAGMENT);
-                transation.commit();
+                onItemViewClick(mGetDataTask.mSearchList,position-1);
+//                Content content = mGetDataTask.mSearchList.get(position-1);
+//                addHasReadContent(content);
+//                FragmentTransaction transation = getFragmentManager().beginTransaction();
+//                transation.setCustomAnimations(R.anim.enter_right, 0, 0, 0);
+//                SucaiHuodongDetailFragment fragment = new SucaiHuodongDetailFragment(content, true);
+//                transation.replace(R.id.sucai_container, fragment, SucaiActivity.SUCAI_DETAIL_FRAGMENT);
+//                transation.addToBackStack(SucaiActivity.SUCAI_DETAIL_FRAGMENT);
+//                transation.commit();
             }
         });
         mSearchListView.setAdapter(mSearchAdapter);
@@ -249,7 +273,48 @@ public class SucaiFragment extends Fragment {
             mGetDataTask.RefreshList(MainTabActivity.mUser, false);
             mHasInit = true;
         }
+        if(fid == 0){
+        	getView().findViewById(R.id.search_field).setVisibility(View.VISIBLE);
+        }else{
+        	View mBackBtn = getView().findViewById(R.id.back);
+        	mBackBtn.setVisibility(View.VISIBLE);
+        	mBackBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick( View v ) {
+                    // TODO Auto-generated method stub
+                    getFragmentManager().popBackStack();
+                }
+            });
+        }
+        
+        
+        
     }
+    
+    private void onItemViewClick(List<Content> contents,int position){
+    	if(fid > 0 && position == 0){
+    		return;
+    	}
+    	Content content = contents.get(position);
+        addHasReadContent(content);
+        FragmentTransaction transation = getFragmentManager().beginTransaction();
+        transation.setCustomAnimations(R.anim.enter_right, 0, 0, 0);
+        Fragment fragment = null;
+        String newStack = null;
+        if(fid == 0 && content.cfid>0){
+        	fragment = new SucaiFragment(content);
+        	newStack = SucaiActivity.SUCAI_FOLDER_FRAGMENT;
+        }else{
+        	fragment = new SucaiHuodongDetailFragment(content, true);
+        	newStack = SucaiActivity.SUCAI_DETAIL_FRAGMENT;
+        }
+        
+        transation.replace(R.id.sucai_container, fragment, newStack);
+        transation.addToBackStack(newStack);
+        transation.commit();
+    }
+    
+    
     
     private void addHasReadContent(Content content) {
         for (Content c : mSucaiList) {
@@ -316,6 +381,9 @@ public class SucaiFragment extends Fragment {
 
 
     private class SucaiAdapter extends BaseAdapter {
+    	
+    	private boolean mSendMailTaskFree = true;
+    	
         private List<Content> innerList = new ArrayList<Content>();
         @Override
         public int getCount() {
@@ -329,10 +397,43 @@ public class SucaiFragment extends Fragment {
         public long getItemId( int position ) {
             return position;
         }
+        
+        private class SendMailTask extends AsyncTask<Void, Void, Boolean> {
+
+            
+            protected Boolean doInBackground( Void... args ) {
+                try {
+                    if (NetDataSource.getInstance(getActivity()).sendMail(MainTabActivity.mUser, content.cfid,1)) {
+                        return true;
+                    }
+                } catch (ZhiDaoIOException e) {
+                } catch (ZhiDaoApiException e) {
+                } catch (ZhiDaoParseException e) {
+                    
+                }
+                return false;
+            }
+            
+            @Override
+            protected void onPostExecute( Boolean result ) {
+                super.onPostExecute(result);
+                if (result) {
+                    if (getActivity() != null) {
+                        Toast.makeText(getActivity(), "发送成功", 0).show();
+                    }
+                } else {
+                    if (getActivity() != null) {
+                        Toast.makeText(getActivity(), "发送失败", 0).show();
+                    }
+                }
+                mSendMailTaskFree = true;
+            }
+        }
+        
         @Override
         public View getView( int position, View convertView, ViewGroup parent ) {
             // TODO Auto-generated method stub
-            Content content = innerList.get(position);
+            final Content content = innerList.get(position);
             View v = null;
             int color;
             if (position % 2 == 0) {
@@ -340,24 +441,57 @@ public class SucaiFragment extends Fragment {
             } else {
                 color = 0xFFD6D6D6;
             }
-            if (convertView == null) {
-                ItemView iv = new ItemView(getActivity());
+            if(content.isCatTitle && fid > 0){
+            	CatTitleView iv = new CatTitleView(getActivity());
+            	iv.setOnDianjiClick(new OnDianjiClick() {
+					
+					@Override
+					public void onclick(View view) {
+						if(!mSendMailTaskFree){
+							return;
+						}
+						mSendMailTaskFree = false;
+						new SendMailTask().execute();
+						
+					}
+				});
+            	iv.update(SucaiFragment.this.content);
+            	v=iv;
+            }else if(content.cid == 0  && content.cfid != 0){
+            	CatView iv = new CatView(getActivity());
                 iv.update(hasReadContent(content), color);
                 v = iv;
-            } else {
-                try {
-                    v = convertView;
-                    ((ItemView) v).update(hasReadContent(content), color);
-                } catch (Exception e) {
-                    ItemView iv = new ItemView(getActivity());
-                    iv.update(hasReadContent(content), color);
-                    v = iv;
-                }
+            }else if(content.cid>0){
+            	ItemView iv = new ItemView(getActivity());
+                iv.update(hasReadContent(content), color);
+                v = iv;
             }
+            
+            
+//            if (convertView == null) {
+//                
+//                
+//            } else {
+//                try {
+//                    v = convertView;
+//                    ((ItemView) v).update(hasReadContent(content), color);
+//                } catch (Exception e) {
+//                    ItemView iv = new ItemView(getActivity());
+//                    iv.update(hasReadContent(content), color);
+//                    v = iv;
+//                }
+//            }
             return v;
         }
         public void notifyDataChange(List<Content> list) {
+        	
             this.innerList.clear();
+            if(fid > 0){
+        		Content content = SucaiFragment.this.content;
+        		
+        		content.isCatTitle = true;
+        		list.add(0, content);
+        	}
             if (list != null) {
                 innerList.addAll(list);
             }
@@ -377,7 +511,7 @@ public class SucaiFragment extends Fragment {
         
     }
 
-    private static class GetDataTask {
+    private class GetDataTask {
         private int mPage;
         private int mSearchPage;
         private List<Content> mList = new ArrayList<Content>();
@@ -414,6 +548,10 @@ public class SucaiFragment extends Fragment {
         public void setEmptyView(TextView v) {
             this.mEmptyView = v;
         }
+        
+        
+        
+        
         
         public void switchListViewMode(boolean isSearchMode) {
             if (isSearchMode) {
@@ -533,7 +671,7 @@ public class SucaiFragment extends Fragment {
                 
                 try {
                     ContentList contentList = NetDataSource.getInstance(mContext)
-                            .getContentsList(user, 0, Constants.LIST_COUNT, page, keyword);
+                            .getContentsList(user,fid,0, Constants.LIST_COUNT, page, keyword);
                     if (contentList != null && !contentList.mContentList.isEmpty()) {
                         return contentList.mContentList;
                     }

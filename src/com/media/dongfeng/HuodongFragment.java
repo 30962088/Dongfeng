@@ -527,7 +527,7 @@ public class HuodongFragment extends Fragment {
                 
                 try {
                     ContentList contentList = NetDataSource.getInstance(mContext)
-                            .getContentsList(user, 1, Constants.LIST_COUNT, page, keyword);
+                            .getContentsList(user, 0,1, Constants.LIST_COUNT, page, keyword);
                     if (contentList != null && !contentList.mContentList.isEmpty()) {
                         return contentList.mContentList;
                     }

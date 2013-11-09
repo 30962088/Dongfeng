@@ -1,5 +1,7 @@
 package com.media.dongfeng;
 
+import java.util.ArrayList;
+
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +9,8 @@ import android.os.Process;
 import android.util.DisplayMetrics;
 import android.widget.TabHost;
 
+import com.baidu.android.pushservice.PushConstants;
+import com.baidu.android.pushservice.PushManager;
 import com.media.dongfeng.model.User;
 import com.media.dongfeng.utils.Utils;
 import com.media.dongfeng.view.BottomTabView;
@@ -28,13 +32,23 @@ public class MainTabActivity extends TabActivity {
     protected void onCreate( Bundle savedInstanceState ) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
+        PushManager.startWork(getApplicationContext(),
+				PushConstants.LOGIN_TYPE_API_KEY, 
+				com.media.dongfeng.push.Utils.getMetaValue(this, "api_key"));
         initView();
         setDisplay();
         if (Utils.loadUser(this) == null) {
             selectTab(SETTING_TAG);
         } else {
             selectTab(SUCAI_TAG);
+            if(mUser != null){
+            	PushManager.setTags(this, new ArrayList<String>(){{
+            		add(mUser.mid);
+            	}});
+            }
         }
+        
+        
     }
     
     private void setDisplay () {

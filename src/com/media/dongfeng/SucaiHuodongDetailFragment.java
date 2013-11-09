@@ -56,6 +56,10 @@ public class SucaiHuodongDetailFragment extends Fragment {
     private boolean mSendMailTaskFree;
     private boolean mActiveTaskFree;
     
+    public SucaiHuodongDetailFragment() {
+		// TODO Auto-generated constructor stub
+	}
+    
     public SucaiHuodongDetailFragment (Content content, boolean isSucai) {
         this.mContent = content;
         this.mIsSucai = isSucai;
@@ -80,7 +84,7 @@ public class SucaiHuodongDetailFragment extends Fragment {
 
         protected Void doInBackground( Void... args ) {
             try {
-                NetDataSource.getInstance(getActivity()).ReadSucai(this.mUser, this.mCid);
+                NetDataSource.getInstance(getActivity()).ReadSucai(this.mUser, this.mCid,0);
             } catch (ZhiDaoIOException e) {
             } catch (ZhiDaoApiException e) {
             } catch (ZhiDaoParseException e) {
@@ -320,7 +324,7 @@ public class SucaiHuodongDetailFragment extends Fragment {
 
         protected Boolean doInBackground( Void... args ) {
             try {
-                if (NetDataSource.getInstance(getActivity()).sendMail(mUser, mCid)) {
+                if (NetDataSource.getInstance(getActivity()).sendMail(mUser, mCid,0)) {
                     return true;
                 }
             } catch (ZhiDaoIOException e) {

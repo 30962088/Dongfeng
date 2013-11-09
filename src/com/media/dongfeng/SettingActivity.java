@@ -1,5 +1,7 @@
 package com.media.dongfeng;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 
 import android.app.AlertDialog;
@@ -13,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.android.pushservice.PushManager;
 import com.media.dongfeng.exception.ZhiDaoApiException;
 import com.media.dongfeng.exception.ZhiDaoIOException;
 import com.media.dongfeng.exception.ZhiDaoParseException;
@@ -211,6 +214,9 @@ public class SettingActivity extends BaseActivity {
             try {
                 User user = NetDataSource.getInstance(
                         getApplicationContext()).login(name, media, email);
+                List<String> tags = new ArrayList<String>();
+                tags.add(user.mid);
+                PushManager.setTags(SettingActivity.this,tags);
                 return user;
             } catch (ZhiDaoParseException e) {
                 // TODO Auto-generated catch block
