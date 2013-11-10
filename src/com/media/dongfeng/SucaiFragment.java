@@ -28,6 +28,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +56,12 @@ public class SucaiFragment extends Fragment {
     private TextView mEmptyView;
     
     private String mSearchText;
+    
+    private ProgressBar mRrefresh;
+    
+    private ProgressBar mLoadMore;
+    
+    private boolean isMore = false;
     
     private List<Content> mSucaiList = new ArrayList<Content>();
     
@@ -99,7 +106,8 @@ public class SucaiFragment extends Fragment {
     public void onActivityCreated( Bundle savedInstanceState ) {
         super.onActivityCreated(savedInstanceState);
         mEmptyView = (TextView) getView().findViewById(R.id.empty);
-        
+        mRrefresh = (ProgressBar) getView().findViewById(R.id.refreshPB);
+        mLoadMore = (ProgressBar) getView().findViewById(R.id.loadMorePB);
         if (MainTabActivity.mUser != null) {
             mSucaiList = Utils.loadSucaiCidList(getActivity(), MainTabActivity.mUser);
         }
@@ -128,6 +136,7 @@ public class SucaiFragment extends Fragment {
             		if(pos>20&&pos == view.getCount()-1){
             			mGetDataTask.switchListViewMode(false);
                         mGetDataTask.LoadMoreList(MainTabActivity.mUser);
+                        
             		}
             	}
             }
@@ -392,6 +401,11 @@ public class SucaiFragment extends Fragment {
     boolean isNeedRefresh = true;
     public void needRefresh(boolean s){
     	isNeedRefresh = s;
+    }
+    
+    public void hideLoading(){
+    	mLoadMore.setVisibility(View.GONE);
+    	mRrefresh.setVisibility(View.GONE);
     }
     
     @Override
@@ -716,6 +730,18 @@ public class SucaiFragment extends Fragment {
                 }
                 isRefresh = (Boolean) params[3];
                 isShowPullDownView = (Boolean) params[4];
+                if(isRefresh && !isShowPullDownView){
+                	mRrefresh.setVisibility(View.VISIBLE);
+                }
+                if(!isSearch && page > 1 && isMore){
+                	SucaiFragment.this.getActivity().runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							mLoadMore.setVisibility(View.VISIBLE);
+							
+						}
+					});
+                }
                 
                 try {
                     ContentList contentList = NetDataSource.getInstance(mContext)
@@ -739,6 +765,7 @@ public class SucaiFragment extends Fragment {
             @Override
             protected void onPostExecute(List<Content> result) {
                 super.onPostExecute(result);
+                hideLoading();
                 if (isSearch) {
                     if (isRefresh) { //refresh
                         mSearchList.clear();
@@ -774,6 +801,14 @@ public class SucaiFragment extends Fragment {
                     mIsSearchListTaskFree = true;
                 }
                 else {
+                	if(isRefresh && result!= null && result.size() == Constants.LIST_COUNT){
+                		isMore = true;
+                	}else if(!isRefresh&&result!= null && mList!=null && result.size() - mList.size() == Constants.LIST_COUNT){
+                		isMore = true;
+                	}else{
+                		isMore = false;
+                	}
+                	
                     if (isRefresh) { //refresh
                         mList.clear();
                         if (result == null || result.isEmpty()) {

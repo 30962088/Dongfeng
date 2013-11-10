@@ -25,6 +25,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.media.dongfeng.exception.ZhiDaoApiException;
@@ -58,6 +59,12 @@ public class InfoFragment extends Fragment {
     private HuodongAdapter mAdapter;
     private HuodongAdapter mSearchAdapter;
     
+    private ProgressBar mRrefresh;
+    
+    private ProgressBar mLoadMore;
+    
+    private boolean isMore = false;
+    
     private boolean mHasInit = false;
     private boolean mIsShowSearch = false;
     
@@ -78,7 +85,8 @@ public class InfoFragment extends Fragment {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
         mEmptyView = (TextView) getView().findViewById(R.id.empty);
-        
+        mRrefresh = (ProgressBar) getView().findViewById(R.id.refreshPB);
+        mLoadMore = (ProgressBar) getView().findViewById(R.id.loadMorePB);
         RTPullListView mListView;
         RTPullListView mSearchListView;
         
@@ -309,6 +317,11 @@ public class InfoFragment extends Fragment {
     	isNeedRefresh = s;
     }
     
+    public void hideLoading(){
+    	mLoadMore.setVisibility(View.GONE);
+    	mRrefresh.setVisibility(View.GONE);
+    }
+    
     @Override
     public void onResume() {
         // TODO Auto-generated method stub
@@ -400,7 +413,7 @@ public class InfoFragment extends Fragment {
         
     }
 
-    private static class GetDataTask {
+    private class GetDataTask {
         private int mPage;
         private int mSearchPage;
         private List<Info> mList = new ArrayList<Info>();
@@ -547,7 +560,18 @@ public class InfoFragment extends Fragment {
                 }
                 isRefresh = (Boolean) params[3];
                 isShowPullDownView = (Boolean) params[4];
-                
+                if(isRefresh && !isShowPullDownView){
+                	mRrefresh.setVisibility(View.VISIBLE);
+                }
+                if(!isSearch && page > 1 && isMore){
+                	InfoFragment.this.getActivity().runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							mLoadMore.setVisibility(View.VISIBLE);
+							
+						}
+					});
+                }
                 try {
                     InfoList infoList = NetDataSource.getInstance(mContext)
                             .getInfoList(user, page, Constants.LIST_COUNT, keyword);
@@ -570,6 +594,7 @@ public class InfoFragment extends Fragment {
             @Override
             protected void onPostExecute(List<Info> result) {
                 super.onPostExecute(result);
+                hideLoading();
                 if (isSearch) {
                     if (isRefresh) { //refresh
                         mSearchList.clear();
@@ -605,6 +630,13 @@ public class InfoFragment extends Fragment {
                     mIsSearchListTaskFree = true;
                 }
                 else {
+                	if(isRefresh && result!= null && result.size() == Constants.LIST_COUNT){
+                		isMore = true;
+                	}else if(!isRefresh&&result!= null && mList!=null && result.size() - mList.size() == Constants.LIST_COUNT){
+                		isMore = true;
+                	}else{
+                		isMore = false;
+                	}
                     if (isRefresh) { //refresh
                         mList.clear();
                         if (result == null || result.isEmpty()) {
