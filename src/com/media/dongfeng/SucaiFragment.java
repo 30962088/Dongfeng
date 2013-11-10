@@ -731,7 +731,14 @@ public class SucaiFragment extends Fragment {
                 isRefresh = (Boolean) params[3];
                 isShowPullDownView = (Boolean) params[4];
                 if(isRefresh && !isShowPullDownView){
-                	mRrefresh.setVisibility(View.VISIBLE);
+                	SucaiFragment.this.getActivity().runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							mRrefresh.setVisibility(View.VISIBLE);
+							
+						}
+					});
+                	
                 }
                 if(!isSearch && page > 1 && isMore){
                 	SucaiFragment.this.getActivity().runOnUiThread(new Runnable() {

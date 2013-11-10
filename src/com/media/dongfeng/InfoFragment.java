@@ -561,7 +561,13 @@ public class InfoFragment extends Fragment {
                 isRefresh = (Boolean) params[3];
                 isShowPullDownView = (Boolean) params[4];
                 if(isRefresh && !isShowPullDownView){
-                	mRrefresh.setVisibility(View.VISIBLE);
+                	InfoFragment.this.getActivity().runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							mRrefresh.setVisibility(View.VISIBLE);
+							
+						}
+					});
                 }
                 if(!isSearch && page > 1 && isMore){
                 	InfoFragment.this.getActivity().runOnUiThread(new Runnable() {
