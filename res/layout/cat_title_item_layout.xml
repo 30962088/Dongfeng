@@ -28,9 +28,11 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="标题"
         android:textColor="#fff"
+        android:ellipsize="end"
+        android:singleLine="true"
         android:layout_alignLeft="@id/dianji"
+        android:layout_alignRight="@id/dianji"
         android:layout_above="@id/dianji"/>
     
     <TextView 
