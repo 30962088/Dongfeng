@@ -287,6 +287,7 @@ public class SucaiFragment extends Fragment {
             public void afterTextChanged(Editable s) {
                 if (s.length() == 0) {
                     mClearBtn.setVisibility(View.GONE);
+                    mGetDataTask.switchListViewMode(false);
                 } else {
                     mClearBtn.setVisibility(View.VISIBLE);
                 }

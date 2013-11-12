@@ -191,10 +191,17 @@ public class SettingActivity extends BaseActivity {
 			media = params[1];
 			email = params[2];
 			try {
+				if(MainTabActivity.mUser != null){
+					PushManager.delTags(SettingActivity.this, new ArrayList<String>(){{
+						add(MainTabActivity.mUser.mid);
+					}});
+				}
+				
 				User user = NetDataSource.getInstance(getApplicationContext())
 						.login(name, media, email);
 				List<String> tags = new ArrayList<String>();
 				tags.add(user.mid);
+				
 				PushManager.setTags(SettingActivity.this, tags);
 				return user;
 			} catch (ZhiDaoParseException e) {
