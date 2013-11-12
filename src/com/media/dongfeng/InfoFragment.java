@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
@@ -227,6 +229,17 @@ public class InfoFragment extends Fragment {
             }
         });
         etSearchText = (EditText) getView().findViewById(R.id.etSearchText);
+        etSearchText.setOnFocusChangeListener(new OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if(!hasFocus){
+					InputMethodManager inputMethodManager = (InputMethodManager)  getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+				    inputMethodManager.hideSoftInputFromWindow(etSearchText.getWindowToken(), 0);
+				}
+				
+			}
+		});
         etSearchText.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
