@@ -30,7 +30,11 @@ public class MainTabActivity extends TabActivity {
     private View mBtnInfo;
     private View mBtnSetting;
     
+    private Intent mSucaiIntent;
+    
     private Intent mInfoIntent;
+    
+    private int defaultFlags;
     
     public static User mUser;
     
@@ -83,12 +87,14 @@ public class MainTabActivity extends TabActivity {
                         return false;
                     }
                     mHost.setCurrentTabByTag(SUCAI_TAG);
+                    mSucaiIntent.setFlags(defaultFlags);
                     return true;
                 } else if (viewId == R.id.btn_huodong_ly) {
                     if (mUser == null) {
                         return false;
                     }
                     mHost.setCurrentTabByTag(HUODONG_TAG);
+                    mInfoIntent.setFlags(defaultFlags);
                     return true;
                 } else if (viewId == R.id.btn_shezhi_ly) {
                     mHost.setCurrentTabByTag(SETTING_TAG);
@@ -103,14 +109,15 @@ public class MainTabActivity extends TabActivity {
     }
     
     private void initTabIntent() {
-        Intent sucaiIntent = new Intent(this, SucaiActivity.class);
+        mSucaiIntent = new Intent(this, SucaiActivity.class);
         mInfoIntent = new Intent(this, InfoActivity.class);
+        defaultFlags = mInfoIntent.getFlags();
         Intent settingIntent = new Intent(this, SettingActivity.class);
         
         mHost.addTab(mHost
                 .newTabSpec(SUCAI_TAG)
                 .setIndicator(SUCAI_TAG, null)
-                .setContent(sucaiIntent));
+                .setContent(mSucaiIntent));
         mHost.addTab(mHost
                 .newTabSpec(HUODONG_TAG)
                 .setIndicator(HUODONG_TAG, null)
@@ -119,6 +126,8 @@ public class MainTabActivity extends TabActivity {
                 .newTabSpec(SETTING_TAG)
                 .setIndicator(SETTING_TAG, null)
                 .setContent(settingIntent));
+        
+        
     }
     
     public void selectTab(String tab) {
@@ -131,6 +140,14 @@ public class MainTabActivity extends TabActivity {
         
         
     }
+    
+    public Intent getmSucaiIntent() {
+		return mSucaiIntent;
+	}
+    
+    public Intent getmInfoIntent() {
+		return mInfoIntent;
+	}
     
     @Override
     protected void onNewIntent(Intent intent) {

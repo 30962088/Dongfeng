@@ -42,7 +42,7 @@ import com.media.dongfeng.utils.Utils;
 public class InfoDetailFragment extends Fragment {
 
     private TextView mBackBtn;
-    private TextView mAnniu;
+    private ImageView mAnniu;
     private TextView mTitleView;
     private TextView mTimeView;
     private TextView mContentView;
@@ -121,7 +121,7 @@ public class InfoDetailFragment extends Fragment {
             }
         });
         
-        mAnniu = (TextView) getView().findViewById(R.id.anniu);
+        mAnniu = (ImageView) getView().findViewById(R.id.anniu);
         mAnniu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick( View v ) {
@@ -130,7 +130,6 @@ public class InfoDetailFragment extends Fragment {
                 
             }
         });
-        mAnniu.setText(/**R.string.send_to_my_mailbox*/"发送到我的邮箱");
 //        updateHuodongButtonBg(mIsSucai, hasJoint(mIsSucai, mContent));
         
         mTitleView = (TextView) getView().findViewById(R.id.titleTxt);

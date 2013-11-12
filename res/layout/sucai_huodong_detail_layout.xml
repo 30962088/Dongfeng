@@ -195,11 +195,11 @@
          	     	android:background="#d6d6d6"
          	     	android:gravity="center_horizontal"
          	     	>
-           <TextView
+           <ImageView
                android:id="@+id/anniu"
                android:layout_width="220dp"
                android:layout_height="34dp"
-               android:background="@drawable/anniu"
+               android:background="@drawable/send"
                android:gravity="center"
                android:textColor="#FFFFFF"
                android:textStyle="bold"

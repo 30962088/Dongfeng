@@ -23,5 +23,6 @@
 	 <string name="err_baoming">报名失败</string>
 	 <string name="err_send_mail">发送失败</string>
 	 
+	 <string name="no_content">对不起,列表为空</string>
 	 <string name="search_no_match">没有找到您搜索的内容</string>
 </resources>

@@ -6,6 +6,7 @@ import java.util.concurrent.RejectedExecutionException;
 
 import org.apache.http.entity.mime.MinimalField;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -19,6 +20,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
@@ -54,6 +56,7 @@ public class SucaiFragment extends Fragment {
     private EditText etSearchText;
     private ImageView mClearBtn;
     private TextView mEmptyView;
+    private TextView mEmptyList;
     
     private String mSearchText;
     
@@ -106,6 +109,7 @@ public class SucaiFragment extends Fragment {
     public void onActivityCreated( Bundle savedInstanceState ) {
         super.onActivityCreated(savedInstanceState);
         mEmptyView = (TextView) getView().findViewById(R.id.empty);
+        mEmptyList = (TextView) getView().findViewById(R.id.empty_list);
         mRrefresh = (ProgressBar) getView().findViewById(R.id.refreshPB);
         mLoadMore = (ProgressBar) getView().findViewById(R.id.loadMorePB);
         if (MainTabActivity.mUser != null) {
@@ -255,6 +259,17 @@ public class SucaiFragment extends Fragment {
             }
         });
         etSearchText = (EditText) getView().findViewById(R.id.etSearchText);
+        etSearchText.setOnFocusChangeListener(new OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if(!hasFocus){
+					InputMethodManager inputMethodManager = (InputMethodManager)  getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+				    inputMethodManager.hideSoftInputFromWindow(etSearchText.getWindowToken(), 0);
+				}
+				
+			}
+		});
         etSearchText.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
@@ -287,6 +302,7 @@ public class SucaiFragment extends Fragment {
                         mGetDataTask.switchListViewMode(false);
                         mGetDataTask.RefreshList(MainTabActivity.mUser, false);
                     } else {
+                    	mSearchText = mSearchText.replaceAll(" ", "-");
                         mGetDataTask.switchListViewMode(true);
                         mGetDataTask.RefreshSearchList(MainTabActivity.mUser, mSearchText, false);
                     }
@@ -565,6 +581,12 @@ public class SucaiFragment extends Fragment {
                 } else {
                     mEmptyView.setVisibility(View.GONE);
                 }
+            }else{
+            	if(innerList == null || innerList.size() == 1){
+            		mEmptyList.setVisibility(View.VISIBLE);
+            	}else{
+            		mEmptyList.setVisibility(View.GONE);
+            	}
             }
             if (mGetDataTask.mListView.getVisibility() != View.GONE) {
                 mEmptyView.setVisibility(View.GONE);

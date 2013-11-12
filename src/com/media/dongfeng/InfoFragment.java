@@ -259,6 +259,7 @@ public class InfoFragment extends Fragment {
                         mGetDataTask.switchListViewMode(false);
                         mGetDataTask.RefreshList(MainTabActivity.mUser, false);
                     } else {
+                    	mSearchText = mSearchText.replaceAll(" ", "-");
                         mGetDataTask.switchListViewMode(true);
                         mGetDataTask.RefreshSearchList(MainTabActivity.mUser, mSearchText, false);
                     }

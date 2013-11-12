@@ -41,7 +41,7 @@ import com.media.dongfeng.utils.Utils;
 public class SucaiHuodongDetailFragment extends Fragment {
 
     private TextView mBackBtn;
-    private TextView mAnniu;
+    private ImageView mAnniu;
     private TextView mTitleView;
     private TextView mTimeView;
     private TextView mContentView;
@@ -128,7 +128,7 @@ public class SucaiHuodongDetailFragment extends Fragment {
             }
         });
         
-        mAnniu = (TextView) getView().findViewById(R.id.anniu);
+        mAnniu = (ImageView) getView().findViewById(R.id.anniu);
         mAnniu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick( View v ) {
@@ -152,7 +152,7 @@ public class SucaiHuodongDetailFragment extends Fragment {
                 }
             }
         });
-        updateHuodongButtonBg(mIsSucai, hasJoint(mIsSucai, mContent));
+      
         
         mTitleView = (TextView) getView().findViewById(R.id.titleTxt);
         mTitleView.setText(mContent.title);
@@ -170,19 +170,7 @@ public class SucaiHuodongDetailFragment extends Fragment {
                 getActivity().getResources().getDimensionPixelSize(R.dimen.detail_banner_height));
     }
     
-    private void updateHuodongButtonBg(boolean isSucai, boolean hasJoint) {
-        if (isSucai) {
-            mAnniu.setText(/**R.string.send_to_my_mailbox*/"发送到我的邮箱");
-        } else {
-            if (hasJoint) {
-                mAnniu.setBackgroundResource(R.drawable.anniu_disable);
-                mAnniu.setText(/**R.string.has_canjia**/"活动已参加");
-            } else {
-                mAnniu.setBackgroundResource(R.drawable.anniu);
-                mAnniu.setText(/**R.string.woyaocanjia**/"我要参加");
-            }
-        }
-    }
+    
     
     private boolean hasJoint(boolean isSucai, Content content) {
         if (isSucai) {
@@ -289,14 +277,14 @@ public class SucaiHuodongDetailFragment extends Fragment {
             super.onPostExecute(result);
             if (result) {
                 addJoint(mContent.cid, true);
-                updateHuodongButtonBg(false, true);
+
                 if (getActivity() != null) {
                     CustomDialog dialog = new CustomDialog(getActivity(), R.style.ChoiceDialogTheme);
                     dialog.showDialog();
                 }
             } else {
                 addJoint(mContent.cid, false);
-                updateHuodongButtonBg(false, false);
+
                 if (getActivity() != null) {
                     Toast.makeText(getActivity(), getActivity().getString(R.string.err_baoming), 0).show();
                 }
