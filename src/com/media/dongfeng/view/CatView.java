@@ -28,11 +28,11 @@ public class CatView extends RelativeLayout {
     public ImageView mIcon;
     public TextView mTitle;
 //    public TextView mDesc;
-//    public ImageView mCornIcon;
+    public ImageView mCornIcon;
 
     private Content mContent;
     
-//    private static Drawable sNewIconDrawable;
+    private static Drawable sNewIconDrawable;
     private static int sItemIconWidth = -1;
     private static int sItemIconHeight = -1;
     
@@ -59,7 +59,7 @@ public class CatView extends RelativeLayout {
         mIcon = (ImageView) findViewById(R.id.img);
         mTitle = (TextView) findViewById(R.id.title);
 //        mDesc = (TextView) findViewById(R.id.desc);
-//        mCornIcon = (ImageView) findViewById(R.id.right_corn_icon);
+        mCornIcon = (ImageView) findViewById(R.id.right_corn_icon);
     }
     
     public void update(Content content, int bgColor) {
@@ -68,14 +68,14 @@ public class CatView extends RelativeLayout {
 //        mIcon.setBackgroundColor(bgColor);
         mTitle.setText(content.title);
 //        mDesc.setText(content.description);
-//        if (content.isRead) {
-////            mCornIcon.setImageDrawable(null);
-//        } else {
-//            if (sNewIconDrawable == null) {
-//                sNewIconDrawable = getResources().getDrawable(R.drawable.new_icon);
-//            }
-//            mCornIcon.setImageDrawable(sNewIconDrawable);
-//        }
+        if (content.isRead) {
+            mCornIcon.setImageDrawable(null);
+        } else {
+            if (sNewIconDrawable == null) {
+                sNewIconDrawable = getResources().getDrawable(R.drawable.new_icon);
+            }
+            mCornIcon.setImageDrawable(sNewIconDrawable);
+        }
         
         if (sItemIconWidth < 0) {
             sItemIconWidth = getContext().getResources().getDimensionPixelSize(R.dimen.item_icon_width);

@@ -88,6 +88,29 @@ public class SucaiFragment extends Fragment {
     		fid = 0;
     	}else{
     		fid = content.cfid;
+    		if(content.isRead == false){
+    			content.isRead = true;
+        		new Thread(new Runnable() {
+    				
+    				@Override
+    				public void run() {
+    					try {
+    						NetDataSource.getInstance(getActivity()).ReadSucai(MainTabActivity.mUser, fid, 1);
+    					} catch (ZhiDaoParseException e) {
+    						// TODO Auto-generated catch block
+    						e.printStackTrace();
+    					} catch (ZhiDaoApiException e) {
+    						// TODO Auto-generated catch block
+    						e.printStackTrace();
+    					} catch (ZhiDaoIOException e) {
+    						// TODO Auto-generated catch block
+    						e.printStackTrace();
+    					}
+    					
+    				}
+    			}).start();
+    		}
+    		
     	}
     	
         mAdapter = new SucaiAdapter();
@@ -348,25 +371,7 @@ public class SucaiFragment extends Fragment {
         Fragment fragment = null;
         String newStack = null;
         if(fid == 0 && content.cfid>0){
-        	new Thread(new Runnable() {
-				
-				@Override
-				public void run() {
-					try {
-						NetDataSource.getInstance(getActivity()).ReadSucai(MainTabActivity.mUser, content.cfid, 1);
-					} catch (ZhiDaoParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (ZhiDaoApiException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (ZhiDaoIOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-				}
-			}).start();
+        	
         	fragment = new SucaiFragment(content);
         	newStack = SucaiActivity.SUCAI_FOLDER_FRAGMENT;
         }else{
