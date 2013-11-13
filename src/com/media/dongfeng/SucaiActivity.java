@@ -19,7 +19,6 @@ public class SucaiActivity extends BaseActivity {
         FragmentTransaction transation = getSupportFragmentManager().beginTransaction();
         SucaiFragment fragment = new SucaiFragment(null);
         transation.add(R.id.sucai_container, fragment, SUCAI_FRAGMENT);
-        transation.addToBackStack(SUCAI_FRAGMENT);
         transation.commit();
         
         
