@@ -155,10 +155,16 @@ public class MainTabActivity extends TabActivity {
     	
     	super.onNewIntent(intent);
     	
-    	if(intent != null && mInfoIntent != null){
+    	if(intent != null){
     		String s = intent.getStringExtra(PushConstants.EXTRA_NOTIFICATION_TITLE);
             if(s != null){
-            	mInfoIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            	if(mInfoIntent != null){
+            		mInfoIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            	}
+            	if(mSucaiIntent != null){
+            		mSucaiIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            	}
+            	
             }
     	}
     	

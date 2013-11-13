@@ -29,6 +29,7 @@
         android:layout_toRightOf="@id/item_left_ly"
         android:paddingTop="14dp"
         android:paddingRight="15dp"
+        android:layout_marginRight="20dp"
         android:orientation="vertical"
         android:gravity="top|left"
         	>
@@ -64,7 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="2dp"
+        android:layout_marginRight="10dp"
         android:src="@drawable/arrow"
         	/>
     

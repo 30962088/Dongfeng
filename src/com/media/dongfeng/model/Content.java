@@ -43,6 +43,7 @@ public class Content implements Serializable {
 	public String datetime;
 	public boolean isJoined;
 	public boolean isRead;
+	public boolean isTop = false;
 	public boolean isCatTitle = false;
 
 	public Content() {
@@ -55,6 +56,7 @@ public class Content implements Serializable {
 		}
 		try {
 			JSONObject obj = new JSONObject(json);
+			isTop = obj.getBoolean("isTop");
 			cid = obj.optInt("cid");
 			cfid = obj.getInt("cfid");
 			title = obj.optString("title");
