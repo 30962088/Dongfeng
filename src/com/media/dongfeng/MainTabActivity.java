@@ -26,7 +26,7 @@ public class MainTabActivity extends TabActivity {
     
     private BottomTabView mBottomTabView;
     private TabHost mHost;
-    
+    private View mBtnSucai;
     private View mBtnInfo;
     private View mBtnSetting;
     
@@ -76,6 +76,7 @@ public class MainTabActivity extends TabActivity {
         setContentView(R.layout.frame_maintabs);
         mBottomTabView = (BottomTabView) findViewById(R.id.bottomTabView);
         mBtnInfo = findViewById(R.id.btn_huodong_ly);
+        mBtnSucai = findViewById(R.id.btn_sucai_ly);
         mBtnSetting = findViewById(R.id.btn_shezhi_ly);
         mBottomTabView.setBottomTabChangeListener(new BottomTabView.OnBottomTabChangeListener() {
             @Override
@@ -164,7 +165,15 @@ public class MainTabActivity extends TabActivity {
             	if(mSucaiIntent != null){
             		mSucaiIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             	}
-            	
+            }
+            String type = intent.getStringExtra("type");
+            if(type != null){
+            	mBtnSetting.performClick();
+            	if("sucai".equals(type)){
+            		mBtnSucai.performClick();
+            	}else if("info".equals(type)){
+            		mBtnInfo.performClick();
+            	}
             }
     	}
     	
