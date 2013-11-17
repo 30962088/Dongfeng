@@ -30,24 +30,37 @@
             android:layout_gravity="bottom"
             android:src="@drawable/folder" />
     </FrameLayout>
-
-    <FrameLayout
+	
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_toLeftOf="@id/item_right_ly"
         android:layout_toRightOf="@id/item_left_ly"
-        android:paddingRight="15dp" >
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:textColor="#5e5e5e"
-            android:textSize="18sp" />
-    </FrameLayout>
+        android:paddingTop="14dp"
+        android:layout_marginRight="5dp"
+        android:orientation="vertical"
+        android:gravity="top|left"
+        	>
+        	<TextView
+        	    android:id="@+id/title"
+        	    android:layout_width="fill_parent"
+        	    android:layout_height="wrap_content"
+        	    android:layout_marginBottom="4dp"
+        	    android:singleLine="true"
+        	    android:textColor="#5e5e5e"
+        	    android:textSize="18sp"
+        	    android:ellipsize="end"
+        	    	/>
+        	<TextView
+        	    android:id="@+id/desc"
+        	    android:layout_width="fill_parent"
+        	    android:layout_height="wrap_content"
+        	    android:lines="2"
+        	    android:textColor="#929292"
+        	    android:textSize="14sp"
+        	    	/>
+    </LinearLayout>
+    
 
     <ImageView
         android:id="@+id/right_corn_icon"

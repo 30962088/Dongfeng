@@ -27,7 +27,7 @@ public class CatView extends RelativeLayout {
 
     public ImageView mIcon;
     public TextView mTitle;
-//    public TextView mDesc;
+    public TextView mDesc;
     public ImageView mCornIcon;
 
     private Content mContent;
@@ -58,7 +58,7 @@ public class CatView extends RelativeLayout {
         LayoutInflater.from(getContext()).inflate(R.layout.cat_view_layout, this);
         mIcon = (ImageView) findViewById(R.id.img);
         mTitle = (TextView) findViewById(R.id.title);
-//        mDesc = (TextView) findViewById(R.id.desc);
+        mDesc = (TextView) findViewById(R.id.desc);
         mCornIcon = (ImageView) findViewById(R.id.right_corn_icon);
     }
     
@@ -67,7 +67,7 @@ public class CatView extends RelativeLayout {
         setBackgroundColor(bgColor);
 //        mIcon.setBackgroundColor(bgColor);
         mTitle.setText(content.title);
-//        mDesc.setText(content.description);
+        mDesc.setText(content.description);
         if (content.isRead) {
             mCornIcon.setImageDrawable(null);
         } else {
