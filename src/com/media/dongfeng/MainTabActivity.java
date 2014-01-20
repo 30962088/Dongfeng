@@ -7,6 +7,7 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Process;
+import android.provider.Settings.Secure;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -40,12 +41,14 @@ public class MainTabActivity extends TabActivity {
     
     public static int mScreenWidth;
     
+    private String android_id;
+    
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
        
-        
+        android_id = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
         PushManager.startWork(getApplicationContext(),
 				PushConstants.LOGIN_TYPE_API_KEY, 
 				com.media.dongfeng.push.Utils.getMetaValue(this, "api_key"));
@@ -57,7 +60,7 @@ public class MainTabActivity extends TabActivity {
             selectTab(SUCAI_TAG);
             if(mUser != null){
             	PushManager.setTags(this, new ArrayList<String>(){{
-            		add(mUser.mid);
+            		add(mUser.mid+"_"+android_id);
             	}});
             }
         }

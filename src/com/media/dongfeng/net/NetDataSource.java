@@ -13,6 +13,7 @@ import org.apache.http.client.methods.HttpGet;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.provider.Settings.Secure;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -36,8 +37,11 @@ public class NetDataSource {
     
     public static final String HOST_2 = "http://42.121.113.199:83/get.mvc/";
     
+    private String android_id;
+    
     private NetDataSource(Context context) {
         mContext = context;
+        android_id = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
     }
     
     public static synchronized NetDataSource getInstance(Context context) {
@@ -60,6 +64,7 @@ public class NetDataSource {
         param.putString("name", name);
         param.putString("company", company);
         param.putString("email", email);
+        param.putString("deviceid", android_id);
         param.putString("pkey", "");
         StringBuilder url = new StringBuilder();
         url.append(HOST).append("PersonLogin");
