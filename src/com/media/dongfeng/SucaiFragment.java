@@ -573,11 +573,11 @@ public class SucaiFragment extends Fragment {
 				iv.update(SucaiFragment.this.content);
 				v = iv;
 			} else {
-				if (position == 0 && content.isTop) {
+				if ((position == 0 && content.isTop)  || (content.cid > 0 && content.cfid>0 && position ==1 )) {
 					SucaiTopView iv = new SucaiTopView(getActivity());
 					iv.update(content, color);
 					v = iv;
-				} else if (content.cid == 0 && content.cfid != 0) {
+				} else if ((content.cid == 0 && content.cfid != 0)) {
 					CatView iv = new CatView(getActivity());
 					iv.update(content, color);
 					v = iv;

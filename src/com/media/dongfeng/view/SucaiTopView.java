@@ -81,7 +81,8 @@ public class SucaiTopView extends RelativeLayout {
         }
         if(content.cfid>0){
         	mType.setImageDrawable(getResources().getDrawable(R.drawable.folder_small));
-        }else{
+        }
+        if(content.cfid>0&&content.cid>0){
         	mType.setImageDrawable(getResources().getDrawable(R.drawable.arrow));
         }
         Size size = content.getSize(getContext());
