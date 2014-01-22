@@ -20,6 +20,7 @@ public class User implements Serializable {
     public String name;
     public String media;
     public String email;
+    public String pkey="";
     
     public User() {
         
@@ -35,6 +36,7 @@ public class User implements Serializable {
             if (uid > 0) {
                 mid = String.valueOf(uid);
             }
+            pkey = obj.getString("Key");
         } catch (JSONException e) {
             throw new ZhiDaoParseException(e);
         }

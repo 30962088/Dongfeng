@@ -58,14 +58,17 @@ public class NetDataSource {
      * @throws ZhiDaoApiException
      * @throws ZhiDaoIOException
      */
-    public User login(String name, String company, String email) 
+    public User login(String name, String company, String email,String pkey) 
             throws ZhiDaoParseException, ZhiDaoApiException, ZhiDaoIOException {
+    	if(pkey == null){
+    		pkey = "";
+    	}
         Bundle param = new Bundle();
         param.putString("name", name);
         param.putString("company", company);
         param.putString("email", email);
         param.putString("deviceid", android_id);
-        param.putString("pkey", "");
+        param.putString("pkey", pkey);
         StringBuilder url = new StringBuilder();
         url.append(HOST).append("PersonLogin");
         String content = NetUtils.openUrl(mContext, url.toString(), "GET", param);

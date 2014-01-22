@@ -40,7 +40,9 @@ public class Utils {
     
     public static void saveUser(Context ctx, User user) {
         File file = new File(ctx.getCacheDir(), USER_FILE);
-        if (user != null) {
+        if(user == null){
+        	file.delete();
+        }else if (user != null) {
             save(user, file);
         }
     }

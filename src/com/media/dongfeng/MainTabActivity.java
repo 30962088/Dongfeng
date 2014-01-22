@@ -2,12 +2,15 @@ package com.media.dongfeng;
 
 import java.util.ArrayList;
 
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.TabActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Process;
 import android.provider.Settings.Secure;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -15,7 +18,11 @@ import android.widget.TabHost;
 
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
+import com.media.dongfeng.exception.ZhiDaoApiException;
+import com.media.dongfeng.exception.ZhiDaoIOException;
+import com.media.dongfeng.exception.ZhiDaoParseException;
 import com.media.dongfeng.model.User;
+import com.media.dongfeng.net.NetDataSource;
 import com.media.dongfeng.utils.Utils;
 import com.media.dongfeng.view.BottomTabView;
 
@@ -47,7 +54,7 @@ public class MainTabActivity extends TabActivity {
     protected void onCreate( Bundle savedInstanceState ) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-       
+        verifyLogin();
         android_id = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
         PushManager.startWork(getApplicationContext(),
 				PushConstants.LOGIN_TYPE_API_KEY, 
@@ -68,7 +75,40 @@ public class MainTabActivity extends TabActivity {
         
     }
     
-    private void setDisplay () {
+    private void verifyLogin() {
+		User user = Utils.loadUser(this);
+		if(user != null){
+			try {
+				User cuser = NetDataSource.getInstance(this).login(user.name,user.media, user.email, user.pkey);
+				if(!TextUtils.equals(user.pkey, cuser.pkey)){
+					AlertDialog.Builder builder = new AlertDialog.Builder(this);
+					builder.setMessage("您的账号已在其他设备上登录")
+					       .setCancelable(false)
+					       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					           public void onClick(DialogInterface dialog, int id) {
+					        	   mUser = null;
+					        	   Utils.saveUser(MainTabActivity.this,null);
+					        	   selectTab(SETTING_TAG);
+					           }
+					       });
+					AlertDialog alert = builder.create();
+					alert.show();
+				}
+			} catch (ZhiDaoParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ZhiDaoApiException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ZhiDaoIOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
+
+	private void setDisplay () {
         DisplayMetrics  dm = new DisplayMetrics();  
         getWindowManager().getDefaultDisplay().getMetrics(dm);  
         int screenWidth = dm.widthPixels;

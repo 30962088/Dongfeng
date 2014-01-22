@@ -198,7 +198,7 @@ public class SettingActivity extends BaseActivity {
 				}
 				
 				User user = NetDataSource.getInstance(getApplicationContext())
-						.login(name, media, email);
+						.login(name, media, email,"");
 				List<String> tags = new ArrayList<String>();
 				tags.add(user.mid);
 				
