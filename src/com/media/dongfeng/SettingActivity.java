@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings.Secure;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -200,7 +201,7 @@ public class SettingActivity extends BaseActivity {
 				User user = NetDataSource.getInstance(getApplicationContext())
 						.login(name, media, email,"");
 				List<String> tags = new ArrayList<String>();
-				tags.add(user.mid);
+				tags.add(user.mid+"_"+Secure.getString(getContentResolver(), Secure.ANDROID_ID));
 				
 				PushManager.setTags(SettingActivity.this, tags);
 				return user;
